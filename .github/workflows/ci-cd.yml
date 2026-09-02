@@ -11,7 +11,7 @@ on:
     branches: ["k8s"]
 
 env:
-  REPO: backstage-crashable
+  REPO: ${{ secrets.GKE_ARTIFACT_REPOSITORY }}
   IMAGE: backstage
 
 jobs:
@@ -64,15 +64,15 @@ jobs:
         run: |
           gcloud auth configure-docker ${{ secrets.GKE_REGION }}-docker.pkg.dev
 
-      - name: Create Artifact Registry repo if not exists
-        run: |
-          gcloud artifacts repositories describe ${{ env.REPO }} \
-            --project=${{ secrets.GCP_PROJECT_ID }} \
-            --location=${{ secrets.GKE_REGION }} || \
-          gcloud artifacts repositories create ${{ env.REPO }} \
-            --repository-format=docker \
-            --location=${{ secrets.GKE_REGION }} \
-            --project=${{ secrets.GCP_PROJECT_ID }}
+    #   - name: Create Artifact Registry repo if not exists
+    #     run: |
+    #       gcloud artifacts repositories describe ${{ env.REPO }} \
+    #         --project=${{ secrets.GCP_PROJECT_ID }} \
+    #         --location=${{ secrets.GKE_REGION }} || \
+    #       gcloud artifacts repositories create ${{ env.REPO }} \
+    #         --repository-format=docker \
+    #         --location=${{ secrets.GKE_REGION }} \
+    #         --project=${{ secrets.GCP_PROJECT_ID }}
 
       - name: Build Docker image
         run: |
