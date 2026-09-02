@@ -1,0 +1,78 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: java-spring-boot-golden-path
+  title: Java Spring Boot Microservice
+  description: Creates a standard NovaBank Java/Spring Boot microservice with CI/CD and Docker.
+  tags:
+    - java
+    - spring-boot
+    - novabank
+spec:
+  owner: platform-team
+  type: service
+
+  parameters:
+    - title: Service Details
+      required:
+        - name
+        - groupId
+        - owner
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Unique name (e.g. nova-payment-service)
+        groupId:
+          title: Maven Group ID
+          type: string
+          default: com.novabank.services
+        owner:
+          title: Owner Team
+          type: string
+          description: Select responsible team entity
+
+    - title: Target Repository
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          enum:
+            - github.com/novabank
+            - gitlab.com/novabank
+
+  steps:
+    - id: fetch
+      name: Generate Skeleton
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.name }}
+          groupId: ${{ parameters.groupId }}
+          owner: ${{ parameters.owner }}
+
+    - id: publish
+      name: Publish to Repository
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: Generated via NovaBank Java Golden Path
+        repoUrl: ${{ parameters.repoUrl }}
+
+    - id: register
+      name: Register in Catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoUrl: ${{ steps['publish'].output.catalogInfoUrl }}
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in Catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
