@@ -124,15 +124,29 @@ jobs:
           gcloud components install gke-gcloud-auth-plugin --quiet
           export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
+  
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/namespace.yaml
-          kubectl apply -f k8s/deployment.yaml
+          # Export the variable so envsubst can read it from the environment
+          export FULL_IMAGE_TAG="${{ secrets.GKE_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ github.sha }}"
+
+          # Render and apply
+          envsubst '${FULL_IMAGE_TAG}' < k8s/deployment.yaml | kubectl apply -f -
+
           kubectl apply -f k8s/service.yaml
-
-          kubectl set image deployment/backstage \
-            backstage=${{ secrets.GKE_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ github.sha }} \
-            -n backstage
-
           kubectl rollout status deployment/backstage -n backstage
-          kubectl get pods -n backstage
+
+# old way
+      # - name: Deploy to Kubernetes
+      #   run: |
+      #     kubectl apply -f k8s/namespace.yaml
+      #     kubectl apply -f k8s/deployment.yaml
+      #     kubectl apply -f k8s/service.yaml
+
+      #     kubectl set image deployment/backstage \
+      #       backstage=${{ secrets.GKE_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ github.sha }} \
+      #       -n backstage
+
+      #     kubectl rollout status deployment/backstage -n backstage
+      #     kubectl get pods -n backstage
