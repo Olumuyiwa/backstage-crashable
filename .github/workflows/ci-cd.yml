@@ -34,11 +34,11 @@ jobs:
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
 
-      - name: Auto-commit updated yarn.lock
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore(ci): auto-update yarn.lock"
-          file_pattern: "yarn.lock"
+      # - name: Auto-commit updated yarn.lock
+      #   uses: stefanzweifel/git-auto-commit-action@v5
+      #   with:
+      #     commit_message: "chore(ci): auto-update yarn.lock"
+      #     file_pattern: "yarn.lock"
 
       - name: Compile TypeScript
         run: yarn tsc
