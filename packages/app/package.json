@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@backstage/frontend-test-utils": "^0.6.3",
+    "@types/uuid": "^9.0.8",
     "@playwright/test": "^1.32.3",
     "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^6.0.0",

@@ -264,6 +264,27 @@ catalog:
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
+  serviceLocatorMethod:
+    type: 'singleTenant'
+  
+  # Set this to true so an error in one cluster doesn't break the other
+  clusterLocatorContinueOnError: true
+
+  clusterLocatorMethods:
+    # Method 1: Static IP & Token Connection
+    - type: 'config'
+      clusters:
+        - url: ${GKE_CONTROL_PLANE_URL}
+          name: ${GKE_CLUSTER}
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          serviceAccountToken: ${K8S_SERVICE_ACCOUNT_TOKEN}
+
+    # Method 2: Dynamic GKE Auto-Discovery
+    - type: 'gke'
+      projectId: ${GCP_PROJECT_ID}
+      region: ${GKE_REGION}
+
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:
