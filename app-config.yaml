@@ -107,7 +107,8 @@ backend:
   # auth:
   #   keys:
   #     - secret: ${BACKEND_SECRET}
-  # baseUrl: http://localhost:7007
+  # baseUrl: http://localhost:7007 
+  # 34.147.253.83
   baseUrl: http://34.147.253.83
   listen:
     port: 7007
@@ -116,6 +117,7 @@ backend:
   csp:
     script-src: ["'self'", "'unsafe-eval'"] 
     connect-src: ["'self'", 'http:', 'https:']
+    upgrade-insecure-requests: false
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
