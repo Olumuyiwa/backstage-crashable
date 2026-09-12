@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: backstage
-          image: nginx
+          image: ${FULL_IMAGE_TAG}
           ports:
             - containerPort: 7007
