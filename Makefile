@@ -45,6 +45,14 @@ start:
 	$(call log,🚀 Starting Backstage...)
 	@yarn start
 
+# 🚀 Stop Backstage (kills ports first)
+stop:
+	$(call log,🚀 Stop service by killing ports 7007 & 3000...)
+	@lsof -ti:7007 | xargs -r kill -9 || true
+	@lsof -ti:3000 | xargs -r kill -9 || true
+	$(call log,🚀 Stopping Backstage...)
+
+
 # 🔄 Full reset (clean + install + start)
 reset: clean install start
 
