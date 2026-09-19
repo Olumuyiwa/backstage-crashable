@@ -1,7 +1,7 @@
 app:
   title: Scaffolded Backstage App
   # baseUrl: http://localhost:3000   
-  baseUrl: http://34.147.253.83
+  baseUrl: http://34.105.132.25
 
   # Enable all packages by default, this will discover packages from packages/app/package.json
   packages: all
@@ -108,8 +108,8 @@ backend:
   #   keys:
   #     - secret: ${BACKEND_SECRET}
   # baseUrl: http://localhost:7007 
-  # 34.147.253.83
-  baseUrl: http://34.147.253.83
+  # 34.105.132.25
+  baseUrl: http://34.105.132.25
   listen:
     port: 7007
     # Uncomment the following host directive to bind to specific interfaces
@@ -122,7 +122,7 @@ backend:
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
     # origin: http://localhost:3000
-    origin: http://34.147.253.83
+    origin: http://34.105.132.25
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   # This is for local development only, it is not recommended to use this in production

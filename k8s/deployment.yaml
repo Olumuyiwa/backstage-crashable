@@ -6,7 +6,7 @@ metadata:
   labels:
     app: poc-service # <--- Matches the label-selector in catalog-info.yaml
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: backstage
