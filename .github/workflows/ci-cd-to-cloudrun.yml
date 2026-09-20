@@ -85,16 +85,6 @@ jobs:
         run: |
           gcloud auth configure-docker ${{ secrets.GKE_REGION }}-docker.pkg.dev
 
-    #   - name: Create Artifact Registry repo if not exists
-    #     run: |
-    #       gcloud artifacts repositories describe ${{ env.REPO }} \
-    #         --project=${{ secrets.GCP_PROJECT_ID }} \
-    #         --location=${{ secrets.GKE_REGION }} || \
-    #       gcloud artifacts repositories create ${{ env.REPO }} \
-    #         --repository-format=docker \
-    #         --location=${{ secrets.GKE_REGION }} \
-    #         --project=${{ secrets.GCP_PROJECT_ID }}
-
       - name: Build Docker image
         run: |
           docker build \
@@ -110,8 +100,8 @@ jobs:
     needs: image-build
     
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - name: Set gcloud project
+        run: gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -119,7 +109,6 @@ jobs:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-  
       - name: Deploy to Cloud Run
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}  # Use the GCP project ID stored in secrets
@@ -131,5 +120,4 @@ jobs:
             --allow-unauthenticated \
             --project $GCP_PROJECT_ID \
             --memory 1Gi \
-            --port 7007 \
             --set-env-vars NODE_ENV=production
