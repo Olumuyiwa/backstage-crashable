@@ -11,7 +11,9 @@ backend:
   baseUrl: https://backstage-233354415663.europe-west2.run.app
   # The listener can also be expressed as a single <host>:<port> string. In this case we bind to
   # all interfaces, the most permissive setting. The right value depends on your specific deployment.
-  listen: ':7007'
+  listen:
+    port: 7007
+    host: 0.0.0.0
 
   # config options: https://node-postgres.com/apis/client
   database:

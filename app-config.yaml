@@ -113,7 +113,7 @@ backend:
   listen:
     port: 7007
     # Uncomment the following host directive to bind to specific interfaces
-    # host: 127.0.0.1
+    host: 0.0.0.0
   csp:
     script-src: ["'self'", "'unsafe-eval'"] 
     connect-src: ["'self'", 'http:', 'https:']
