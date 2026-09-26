@@ -24,10 +24,14 @@ backend.add(
 backend.add(import('@backstage/plugin-techdocs-backend'));
 
 // auth plugin
-backend.add(import('@backstage/plugin-auth-backend'));
 // See https://backstage.io/docs/backend-system/building-backends/migrating#the-auth-plugin
-backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
+backend.add(import('@backstage/plugin-auth-backend'));
+
 // See https://backstage.io/docs/auth/guest/provider
+backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
+
+// https://backstage.io/docs/auth/github/provider
+backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));
@@ -68,5 +72,7 @@ backend.add(import('@backstage/plugin-signals-backend'));
 
 // mcp actions plugin
 backend.add(import('@backstage/plugin-mcp-actions-backend'));
+
+
 
 backend.start();

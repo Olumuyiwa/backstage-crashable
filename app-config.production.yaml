@@ -34,8 +34,23 @@ backend:
       #     $file: <file-path>/ca/server.crt
 
 auth:
+  environment: development
   providers:
     guest: {}
+    github:
+      production:
+        clientId: ${GIHUB_CLOUDRUN_OAUTH_CLIENT_ID}
+        clientSecret: ${GIHUB_CLOUDRUN_OAUTH_CLIENT_SECRET}
+        audience: ${GIHUB_CLOUDRUN_OAUTH_LOGIN_BASE_URL}
+        ## uncomment if using GitHub Enterprise
+        # enterpriseInstanceUrl: ${GIHUB_CLOUDRUN_OAUTH_ENTERPRISE_INSTANCE_URL}
+        ## uncomment to set lifespan of user session
+        sessionDuration: { hours: 24 } # supports `ms` library format (e.g. '24h', '2 days'), ISO duration, "human duration" as used in code
+        signIn:
+          resolvers:
+            # See https://backstage.io/docs/auth/github/provider#resolvers for more resolvers
+            - resolver: userIdMatchingUserEntityAnnotation
+
 
 catalog:
   # Overrides the default list locations from app-config.yaml as these contain example data.
