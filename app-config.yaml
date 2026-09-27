@@ -1,7 +1,7 @@
 app:
   title: Scaffolded Backstage App
   # baseUrl: http://localhost:3000   
-  baseUrl: http://34.147.253.83
+  baseUrl: http://34.105.132.25
 
   # Enable all packages by default, this will discover packages from packages/app/package.json
   packages: all
@@ -107,8 +107,9 @@ backend:
   # auth:
   #   keys:
   #     - secret: ${BACKEND_SECRET}
-  # baseUrl: http://localhost:7007
-  baseUrl: http://34.147.253.83
+  # baseUrl: http://localhost:7007 
+  # 34.105.132.25
+  baseUrl: http://34.105.132.25
   listen:
     port: 7007
     # Uncomment the following host directive to bind to specific interfaces
@@ -116,11 +117,12 @@ backend:
   csp:
     script-src: ["'self'", "'unsafe-eval'"] 
     connect-src: ["'self'", 'http:', 'https:']
+    upgrade-insecure-requests: false
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
     # origin: http://localhost:3000
-    origin: http://34.147.253.83
+    origin: http://34.105.132.25
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   # This is for local development only, it is not recommended to use this in production
@@ -260,8 +262,29 @@ catalog:
     #   rules:
     #     - allow: [User, Group]
 
-kubernetes:
-  # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
+# kubernetes:
+#   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
+#   serviceLocatorMethod:
+#     type: 'singleTenant'
+  
+#   # Set this to true so an error in one cluster doesn't break the other
+#   clusterLocatorContinueOnError: true
+
+#   clusterLocatorMethods:
+#     # Method 1: Static IP & Token Connection
+#     - type: 'config'
+#       clusters:
+#         - url: ${GKE_CONTROL_PLANE_URL}
+#           name: ${GKE_CLUSTER}
+#           authProvider: 'serviceAccount'
+#           skipTLSVerify: true
+#           serviceAccountToken: ${K8S_SERVICE_ACCOUNT_TOKEN}
+
+#     # Method 2: Dynamic GKE Auto-Discovery
+#     - type: 'gke'
+#       projectId: ${GCP_PROJECT_ID}
+#       region: ${GKE_REGION}
+
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:

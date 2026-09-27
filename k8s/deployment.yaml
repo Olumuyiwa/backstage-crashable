@@ -3,8 +3,10 @@ kind: Deployment
 metadata:
   name: backstage
   namespace: backstage
+  labels:
+    app: poc-service # <--- Matches the label-selector in catalog-info.yaml
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backstage
@@ -15,6 +17,6 @@ spec:
     spec:
       containers:
         - name: backstage
-          image: nginx
+          image: ${FULL_IMAGE_TAG}
           ports:
             - containerPort: 7007

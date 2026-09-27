@@ -11,3 +11,21 @@ spec:
   type: website
   owner: john@example.com
   lifecycle: experimental
+
+---
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: my-service
+  description: Example microservice deployed on Kubernetes
+  annotations:
+    # Option A: Match resources using Kubernetes label selector (Recommended)
+    backstage.io/kubernetes-label-selector: 'app=poc-service'
+    
+    # Option B: Match resources using explicit namespace
+    backstage.io/kubernetes-namespace: 'backstage'
+spec:
+  type: service
+  lifecycle: production
+  owner: team-a
