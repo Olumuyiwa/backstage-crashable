@@ -44,7 +44,15 @@ auth:
       # Must match the `guest` group that owns guest-visible templates so the
       # ownership-based read policy grants guests access to those templates.
       ownershipEntityRefs: [group:default/guest]
-        # callbackUrl: ${BACKSTAGE_LOCAL_CALL_BACK_URL}
+    github:
+      production:
+        clientId: ${GIHUB_CLOUDRUN_OAUTH_CLIENT_ID}
+        clientSecret: ${GIHUB_CLOUDRUN_OAUTH_CLIENT_SECRET}
+        audience: ${GIHUB_CLOUDRUN_OAUTH_LOGIN_BASE_URL}
+        ## uncomment if using GitHub Enterprise
+        # enterpriseInstanceUrl: ${GIHUB_CLOUDRUN_OAUTH_ENTERPRISE_INSTANCE_URL}
+        ## uncomment to set lifespan of user session
+        sessionDuration: { hours: 24 } # supports `ms` library format (e.g. '24h', '2 days'), ISO duration, "human duration" as used in code
         signIn:
           resolvers:
             # See https://backstage.io/docs/auth/gitlab/provider#resolvers for more resolvers
