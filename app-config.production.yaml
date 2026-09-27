@@ -34,22 +34,33 @@ backend:
       #     $file: <file-path>/ca/server.crt
 
 auth:
-  environment: development
+  environment: production
+  # see https://backstage.io/docs/auth/ to learn about auth providers
   providers:
-    guest: {}
-    github:
-      production:
-        clientId: ${GIHUB_CLOUDRUN_OAUTH_CLIENT_ID}
-        clientSecret: ${GIHUB_CLOUDRUN_OAUTH_CLIENT_SECRET}
-        audience: ${GIHUB_CLOUDRUN_OAUTH_LOGIN_BASE_URL}
-        ## uncomment if using GitHub Enterprise
-        # enterpriseInstanceUrl: ${GIHUB_CLOUDRUN_OAUTH_ENTERPRISE_INSTANCE_URL}
-        ## uncomment to set lifespan of user session
-        sessionDuration: { hours: 24 } # supports `ms` library format (e.g. '24h', '2 days'), ISO duration, "human duration" as used in code
+    # See https://backstage.io/docs/auth/guest/provider
+    guest:
+      dangerouslyAllowOutsideDevelopment: true
+      userEntityRef: user:default/backstage-guest
+      # Must match the `guest` group that owns guest-visible templates so the
+      # ownership-based read policy grants guests access to those templates.
+      ownershipEntityRefs: [group:default/guest]
+        # callbackUrl: ${BACKSTAGE_LOCAL_CALL_BACK_URL}
         signIn:
           resolvers:
-            # See https://backstage.io/docs/auth/github/provider#resolvers for more resolvers
-            - resolver: userIdMatchingUserEntityAnnotation
+            # See https://backstage.io/docs/auth/gitlab/provider#resolvers for more resolvers
+            - resolver: usernameMatchingUserEntityName
+  # see https://backstage.io/docs/ai/mcp-actions#client-id-metadata-documents
+  # to learn more about client id metadata documents
+  experimentalClientIdMetadataDocuments:
+    enabled: false
+    # Optional: restrict which `client_id` URLs are allowed (defaults to ['*'])
+    # allowedClientIdPatterns:
+    #   - 'https://example.com/*'
+    #   - 'https://*.trusted-domain.com/*'
+    # Optional: restrict which redirect URIs are allowed (defaults to ['*'])
+    # allowedRedirectUriPatterns:
+    #   - 'http://localhost:*'
+    #   - 'https://*.example.com/*'
 
 
 catalog:
