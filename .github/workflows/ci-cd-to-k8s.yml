@@ -39,6 +39,16 @@ jobs:
       #   with:
       #     commit_message: "chore(ci): auto-update yarn.lock"
       #     file_pattern: "yarn.lock"
+        # run: yarn install --frozen-lockfile
+        run: yarn install
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
+
+      # - name: Auto-commit updated yarn.lock
+      #   uses: stefanzweifel/git-auto-commit-action@v5
+      #   with:
+      #     commit_message: "chore(ci): auto-update yarn.lock"
+      #     file_pattern: "yarn.lock"
 
       - name: Compile TypeScript
         run: yarn tsc
@@ -131,21 +141,34 @@ jobs:
   #           --project ${{ secrets.GCP_PROJECT_ID }} \
   #           --region ${{ secrets.GKE_REGION }}
 
-  #     - name: Install GKE auth plugin
-  #       run: |
-  #         gcloud components install gke-gcloud-auth-plugin --quiet
-  #         export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+      - name: Install GKE auth plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin --quiet
+          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
   
-  #     - name: Deploy to Kubernetes
-  #       run: |
-  #         kubectl apply -f k8s/namespace.yaml
-  #         # Export the variable so envsubst can read it from the environment
-  #         export FULL_IMAGE_TAG="${{ secrets.GKE_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ github.sha }}"
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          # Export the variable so envsubst can read it from the environment
+          export FULL_IMAGE_TAG="${{ secrets.GKE_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ github.sha }}"
 
-  #         # Render and apply
-  #         envsubst '${FULL_IMAGE_TAG}' < k8s/deployment.yaml | kubectl apply -f -
+          # Render and apply
+          envsubst '${FULL_IMAGE_TAG}' < k8s/deployment.yaml | kubectl apply -f -
 
-  #         kubectl apply -f k8s/service.yaml
-  #         kubectl rollout status deployment/backstage -n backstage
+          kubectl apply -f k8s/service.yaml
+          kubectl rollout status deployment/backstage -n backstage
 
+# old way
+      # - name: Deploy to Kubernetes
+      #   run: |
+      #     kubectl apply -f k8s/namespace.yaml
+      #     kubectl apply -f k8s/deployment.yaml
+      #     kubectl apply -f k8s/service.yaml
+
+      #     kubectl set image deployment/backstage \
+      #       backstage=${{ secrets.GKE_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ github.sha }} \
+      #       -n backstage
+
+      #     kubectl rollout status deployment/backstage -n backstage
+      #     kubectl get pods -n backstage
