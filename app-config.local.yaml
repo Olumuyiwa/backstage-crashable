@@ -1,6 +1,6 @@
 app:
   title: Scaffolded Backstage App
-  baseUrl: http://localhost:7007
+  baseUrl: http://localhost:3000
 
   # Enable all packages by default, this will discover packages from packages/app/package.json
   packages: all
@@ -118,7 +118,7 @@ backend:
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
-    origin: http://localhost:7007
+    origin: [http://localhost:7007, http://localhost:3000]
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   # This is for local development only, it is not recommended to use this in production
@@ -170,38 +170,24 @@ techdocs:
 
 
 auth:
-  environment: production
-  # see https://backstage.io/docs/auth/ to learn about auth providers
+  environment: development
   providers:
-    # See https://backstage.io/docs/auth/guest/provider
     guest:
       dangerouslyAllowOutsideDevelopment: true
       userEntityRef: user:default/backstage-guest
-      # Must match the `guest` group that owns guest-visible templates so the
-      # ownership-based read policy grants guests access to those templates.
       ownershipEntityRefs: [group:default/guest]
+    
     github:
-      production:
-        clientId: ${GIHUB_OAUTH_CLIENT_ID}
-        clientSecret: ${GIHUB_OAUTH_CLIENT_SECRET}
-        audience: ${GIHUB_OAUTH_LOGIN_BASE_URL}
-        # callbackUrl: ${BACKSTAGE_LOCAL_CALL_BACK_URL}
-        signIn:
-          resolvers:
-            # See https://backstage.io/docs/auth/gitlab/provider#resolvers for more resolvers
-            - resolver: usernameMatchingUserEntityName
-  # see https://backstage.io/docs/ai/mcp-actions#client-id-metadata-documents
-  # to learn more about client id metadata documents
-  experimentalClientIdMetadataDocuments:
-    enabled: false
-    # Optional: restrict which `client_id` URLs are allowed (defaults to ['*'])
-    # allowedClientIdPatterns:
-    #   - 'https://example.com/*'
-    #   - 'https://*.trusted-domain.com/*'
-    # Optional: restrict which redirect URIs are allowed (defaults to ['*'])
-    # allowedRedirectUriPatterns:
-    #   - 'http://localhost:*'
-    #   - 'https://*.example.com/*'
+      development:
+        clientId: ${GITHUB_LOCAL_OAUTH_CLIENT_ID}
+        clientSecret: ${GITHUB_LOCAL_OAUTH_CLIENT_SECRET}
+        additionalScopes: ['read:user', 'user:email']  
+        # signIn:
+        #   resolvers:
+        #     # Tries matching username first; falls back to email matching
+        #     - resolver: usernameMatchingUserEntityName
+        #     - resolver: emailMatchingUserEntityProfileEmail
+        #     - resolver: emailLocalPartMatchingUserEntityName
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
@@ -211,19 +197,23 @@ catalog:
   # See https://backstage.io/docs/features/software-catalog/#adding-components-to-the-catalog for more details
   # on how to get entities into the catalog.
   locations:
-    # Local example data, replace this with your production config, these are intended for demo use only.
-    # File locations are relative to the backend process, typically in a deployed context, such as in a Docker container, this will be the root
-    - type: file
-      target: ./examples/entities.yaml
+    # # Local example data, replace this with your production config, these are intended for demo use only.
+    # # File locations are relative to the backend process, typically in a deployed context, such as in a Docker container, this will be the root
+    # - type: file
+    #   target: ./examples/entities.yaml
 
-    # Local example template
-    - type: file
-      target: ./examples/template/template.yaml
-      rules:
-        - allow: [Template]
+    # # Local example template
+    # - type: file
+    #   target: ./examples/template/template.yaml
+    #   rules:
+    #     - allow: [Template]
 
-    # Local example organizational data
+    # # Local example organizational data
+    # - type: file
+    #   target: ./examples/org.yaml
+    #   rules:
+    #     - allow: [User, Group]
+
+    # Local static catalog entities
     - type: file
-      target: ./examples/org.yaml
-      rules:
-        - allow: [User, Group]
+      target: ./examples/entities/users.yaml 

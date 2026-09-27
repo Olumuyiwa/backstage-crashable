@@ -1,78 +1,93 @@
-/*
- * Hi!
- *
- * Note that this is an EXAMPLE Backstage backend. Please check the README.
- *
- * Happy hacking!
- */
-
 import { createBackend } from '@backstage/backend-defaults';
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import { githubAuthenticator } from '@backstage/plugin-auth-backend-module-github-provider';
+import {
+  authProvidersExtensionPoint,
+  createOAuthProviderFactory,
+} from '@backstage/plugin-auth-node';
 
 const backend = createBackend();
 
+// Add default backend features
 backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-proxy-backend'));
-
-// scaffolder plugin
 backend.add(import('@backstage/plugin-scaffolder-backend'));
+backend.add(import('@backstage/plugin-techdocs-backend'));
+backend.add(import('@backstage/plugin-auth-backend'));
+backend.add(import('@backstage/plugin-catalog-backend'));
+
+// Scaffolder plugin
 backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
 backend.add(
   import('@backstage/plugin-scaffolder-backend-module-notifications'),
 );
 
-// techdocs plugin
-backend.add(import('@backstage/plugin-techdocs-backend'));
-
-// auth plugin
-// See https://backstage.io/docs/backend-system/building-backends/migrating#the-auth-plugin
-backend.add(import('@backstage/plugin-auth-backend'));
-
-// See https://backstage.io/docs/auth/guest/provider
+// Auth providers
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 
-// https://backstage.io/docs/auth/github/provider
-backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
-
-// catalog plugin
-backend.add(import('@backstage/plugin-catalog-backend'));
+// Catalog modules
 backend.add(
   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
 );
-
-// See https://backstage.io/docs/features/software-catalog/configuration#subscribing-to-catalog-errors
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
-// permission plugin
+// Permissions
 backend.add(import('@backstage/plugin-permission-backend'));
-// See https://backstage.io/docs/permissions/getting-started for how to create your own permission policy
 backend.add(
   import('@backstage/plugin-permission-backend-module-allow-all-policy'),
 );
 
-// search plugin
+// Search
 backend.add(import('@backstage/plugin-search-backend'));
-
-// search engine
-// See https://backstage.io/docs/features/search/search-engines
 backend.add(import('@backstage/plugin-search-backend-module-pg'));
-
-// search collators
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
-// kubernetes plugin
+// Other plugins
 backend.add(import('@backstage/plugin-kubernetes-backend'));
-
-// user settings plugin
 backend.add(import('@backstage/plugin-user-settings-backend'));
-
-// notifications and signals plugins
 backend.add(import('@backstage/plugin-notifications-backend'));
 backend.add(import('@backstage/plugin-signals-backend'));
-
-// mcp actions plugin
 backend.add(import('@backstage/plugin-mcp-actions-backend'));
 
+// --- CUSTOM GITHUB AUTH MODULE (Bypasses Private Email Check) ---
+const customGithubAuthModule = createBackendModule({
+  pluginId: 'auth',
+  moduleId: 'custom-github-provider',
+  register(reg) {
+    reg.registerInit({
+      deps: { providers: authProvidersExtensionPoint },
+      async init({ providers }) {
+        providers.registerProvider({
+          providerId: 'github',
+          factory: createOAuthProviderFactory({
+            authenticator: githubAuthenticator,
+            async signInResolver(info, ctx) {
+              // Extract the GitHub username directly from raw profile response
+              const username = info.result.fullProfile.username;
 
+              if (!username) {
+                throw new Error('GitHub profile does not contain a valid username');
+              }
+
+              // Match directly to user entity in catalog: user:default/<username>
+              const userEntityRef = `user:default/${username.toLowerCase()}`;
+
+              return ctx.issueToken({
+                claims: {
+                  sub: userEntityRef,
+                  ent: [userEntityRef],
+                },
+              });
+            },
+          }),
+        });
+      },
+    });
+  },
+});
+
+// Register the custom module (DO NOT import the default github-provider module above)
+backend.add(customGithubAuthModule);
 
 backend.start();
