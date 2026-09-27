@@ -48,7 +48,10 @@ backend:
 auth:
   environment: production
   providers:
-    guest: {}
+    guest: 
+      userEntityRef: user:default/backstage-guest
+      dangerouslyAllowOutsideDevelopment: true
+      ownershipEntityRefs: [group:default/guest-family]
     github:
       production:
         clientId: ${GIHUB_CLOUDRUN_OAUTH_CLIENT_ID}
