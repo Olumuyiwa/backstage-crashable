@@ -16,23 +16,23 @@ import {
 const signInPage = SignInPageBlueprint.make({
   params: {
     loader: async () => props => {
-      // const configApi = useApi(configApiRef);
-      // if (configApi.getString('auth.environment') === 'development') {
-      //   return (
-      //     <SignInPage
-      //       {...props}
-      //       providers={[
-      //         'guest',
-      //         {
-      //           id: 'github-auth-provider',
-      //           title: 'GitHub',
-      //           message: 'Sign in using GitHub',
-      //           apiRef: githubAuthApiRef,
-      //         },
-      //       ]}
-      //     />
-      //   );
-      // }
+      const configApi = useApi(configApiRef);
+      if (configApi.getString('auth.environment') === 'development') {
+        return (
+          <SignInPage
+            {...props}
+            providers={[
+              'guest',
+              {
+                id: 'github-auth-provider',
+                title: 'GitHub',
+                message: 'Sign in using GitHub',
+                apiRef: githubAuthApiRef,
+              },
+            ]}
+          />
+        );
+      }
 
       return (
         <SignInPage
