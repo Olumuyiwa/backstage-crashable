@@ -46,7 +46,7 @@ backend:
       #     $file: <file-path>/ca/server.crt
 
 auth:
-  environment: development
+  environment: production
   providers:
     guest: 
       userEntityRef: user:default/backstage-guest
