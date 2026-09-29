@@ -8,7 +8,7 @@ on:
   push:
     branches: ["github-cloudrun"]
   pull_request:
-    branches: ["cloudrun"]
+    branches: ["github-cloudrun"]
 
 env:
   REPO: ${{ secrets.GKE_ARTIFACT_REPOSITORY }}
@@ -120,6 +120,6 @@ jobs:
             --allow-unauthenticated \
             --project $GCP_PROJECT_ID \
             --memory 1Gi \
-            --set-env-vars NODE_ENV=production
+            --set-env-vars NODE_ENV=production \
             --set-env-vars GIHUB_CLOUDRUN_OAUTH_CLIENT_ID=${{ secrets.GIHUB_CLOUDRUN_OAUTH_CLIENT_ID }} \
             --set-env-vars GIHUB_CLOUDRUN_OAUTH_CLIENT_SECRET=${{ secrets.GIHUB_CLOUDRUN_OAUTH_CLIENT_SECRET }}

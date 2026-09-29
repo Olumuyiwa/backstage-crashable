@@ -1,5 +1,4 @@
 //packages/app/src/App.tsx
-//packages/app/src/App.tsx
 import { createApp } from '@backstage/frontend-defaults';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import kubernetesPlugin from '@backstage/plugin-kubernetes/alpha'; // <-- Changed to default import 
@@ -17,33 +16,36 @@ import {
 const signInPage = SignInPageBlueprint.make({
   params: {
     loader: async () => props => {
-      const configApi = useApi(configApiRef);
-      if (configApi.getString('auth.environment') === 'development') {
-        return (
-          <SignInPage
-            {...props}
-            providers={[
-              'guest',
-              {
-                id: 'github-auth-provider',
-                title: 'GitHub',
-                message: 'Sign in using GitHub',
-                apiRef: githubAuthApiRef,
-              },
-            ]}
-          />
-        );
-      }
+      // const configApi = useApi(configApiRef);
+      // if (configApi.getString('auth.environment') === 'development') {
+      //   return (
+      //     <SignInPage
+      //       {...props}
+      //       providers={[
+      //         'guest',
+      //         {
+      //           id: 'github-auth-provider',
+      //           title: 'GitHub',
+      //           message: 'Sign in using GitHub',
+      //           apiRef: githubAuthApiRef,
+      //         },
+      //       ]}
+      //     />
+      //   );
+      // }
 
       return (
         <SignInPage
           {...props}
-          provider={{
-            id: 'github-auth-provider',
-            title: 'GitHub',
-            message: 'Sign in using GitHub',
-            apiRef: githubAuthApiRef,
-          }}
+          providers={[
+            'guest',
+            {
+              id: 'github-auth-provider',
+              title: 'GitHub',
+              message: 'Sign in using GitHub',
+              apiRef: githubAuthApiRef,
+            },
+          ]}
         />
       );
     },
