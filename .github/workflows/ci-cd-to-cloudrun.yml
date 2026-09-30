@@ -6,9 +6,9 @@ permissions:
 
 on:
   push:
-    branches: ["github-cloudrun"]
+    branches: ["cloudrun"]
   pull_request:
-    branches: ["github-cloudrun"]
+    branches: ["cloudrun"]
 
 env:
  

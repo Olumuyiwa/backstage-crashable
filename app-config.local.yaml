@@ -49,12 +49,16 @@ backend:
       - scaffolder
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 
+
 auth:
-  environment: development
+  environment: production
   providers:
-    guest: {}
+    guest: 
+      userEntityRef: user:default/backstage-guest
+      dangerouslyAllowOutsideDevelopment: true
+      ownershipEntityRefs: [group:default/guest-family]
     github:
-      development:
+      production:
         clientId: ${GITHUB_LOCAL_OAUTH_CLIENT_ID}
         clientSecret: ${GITHUB_LOCAL_OAUTH_CLIENT_SECRET}
         signIn:
