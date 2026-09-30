@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: groups
+  description: All groups
+spec:
+  targets:
+    - ./users-and-groups/groups/products.yaml
+    - ./users-and-groups/groups/payments.yaml
+    - ./users-and-groups/groups/edutech.yaml
+    - ./users-and-groups/groups/devex.yaml
+    - ./users-and-groups/groups/sre.yaml
+    - ./users-and-groups/groups/poc.yaml
+    - ./users-and-groups/groups/guests.yaml

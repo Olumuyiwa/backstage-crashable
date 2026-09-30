@@ -119,34 +119,24 @@ catalog:
     pullRequestBranchName: backstage-integration
   rules:
     - allow: [Component, System, API, Resource, Location, User, Group]
+
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    # Local example data, replace this with your production config, these are intended for demo use only.
+    # File locations are relative to the backend process, typically in a deployed context, such as in a Docker container, this will be the root
     - type: file
-      target: ../../examples/entities.yaml
+      target: ../../core-components/local/entities.yaml
 
     # Local example template
     - type: file
-      target: ../../examples/template/template.yaml
-      rules:
-        - allow: [Template]
-
-    # Local example template
-    - type: file
-      target: ../../examples/template2/template.yaml
-      rules:
-        - allow: [Template]
-
-    # Another local template
-    - type: file
-      target: ../../examples/new-java-service/template.yaml
+      target: ../../core-components/local/templates/template-locations.yaml
       rules:
         - allow: [Template]
 
     # Local example organizational data
     - type: file
-      target: ../../examples/org.yaml
+      target: ../../core-components/local/org.yaml
       rules:
-        - allow: [User, Group]
+        - allow: [User, Group, Location]
 
     ## Uncomment these lines to add more example data
     # - type: url
