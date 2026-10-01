@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: templates
+  description: All templates
+spec:
+  targets:
+    - ./new-java-project/template.yaml
+    - ./new-nodejs-project/template.yaml 
+    # - ./new-laravel-project/template.yaml
+    # - ./new-python-project/template.yaml
+    # - ./new-react-vite-project/template.yaml   
+    # - ./new-nextjs-project/template.yaml      
+    # - ./request-for-support/template.yaml   
+    # - ./google-access-request/template.yaml
+    # - ./backstage-onboarding/template.yaml
+    # - ./backstage-offboarding/template.yaml

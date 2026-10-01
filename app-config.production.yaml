@@ -1,6 +1,7 @@
 app:
   # Should be the same as backend.baseUrl when using the `app-backend` plugin.
   baseUrl: https://backstage-233354415663.europe-west2.run.app
+  title: My Cloudrun Backstage
 
 backend:
   # Note that the baseUrl should be the URL that the browser and other clients
@@ -14,6 +15,17 @@ backend:
   listen:
     port: 8080
     host: 0.0.0.0
+
+  csp:
+    script-src: ["'self'", "'unsafe-eval'"] 
+    connect-src: ["'self'", 'http:', 'https:']
+    upgrade-insecure-requests: false
+    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
+    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
+  cors:
+    origin: https://backstage-233354415663.europe-west2.run.app
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
 
   # config options: https://node-postgres.com/apis/client
   database:
@@ -34,10 +46,44 @@ backend:
       #     $file: <file-path>/ca/server.crt
 
 auth:
+  environment: production
   providers:
-    guest: {}
+    guest: 
+      userEntityRef: user:default/backstage-guest
+      dangerouslyAllowOutsideDevelopment: true
+      ownershipEntityRefs: [group:default/guest-family]
+    github:
+      production:
+        clientId: ${GIHUB_CLOUDRUN_OAUTH_CLIENT_ID}
+        clientSecret: ${GIHUB_CLOUDRUN_OAUTH_CLIENT_SECRET}
+        signIn:
+          resolvers:
+            # See https://backstage.io/docs/auth/github/provider#resolvers for more resolvers
+            - resolver: usernameMatchingUserEntityName
+
+integrations:
+  github:
+    - host: github.com
+      # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
+      # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
+      token: ${MY_GITHUB_TOKEN_OLUMUYIWA}
+    ### Example for how to add your GitHub Enterprise instance using the API:
+    # - host: ghe.example.net
+    #   apiBaseUrl: https://ghe.example.net/api/v3
+    #   token: ${GHE_TOKEN}
 
 catalog:
+  providers:
+    github:
+      myGithubProvider:
+        organization: olumuyiwa-org
+        catalogPath: '/catalog-info.yaml'
+        filters:
+          branch: 'main'
+          repository: '.*'
+        schedule:
+          frequency: { minutes: 1 }
+          timeout: { minutes: 3 }
   # Overrides the default list locations from app-config.yaml as these contain example data.
   # See https://backstage.io/docs/features/software-catalog/#adding-components-to-the-catalog for more details
   # on how to get entities into the catalog.
@@ -45,16 +91,16 @@ catalog:
     # Local example data, replace this with your production config, these are intended for demo use only.
     # File locations are relative to the backend process, typically in a deployed context, such as in a Docker container, this will be the root
     - type: file
-      target: ./examples/entities.yaml
+      target: ./core-components/production/entities.yaml
 
     # Local example template
     - type: file
-      target: ./examples/template/template.yaml
+      target: ./core-components/production/templates/template-locations.yaml
       rules:
         - allow: [Template]
 
     # Local example organizational data
     - type: file
-      target: ./examples/org.yaml
+      target: ./core-components/production/org.yaml
       rules:
-        - allow: [User, Group]
+        - allow: [User, Group, Location]

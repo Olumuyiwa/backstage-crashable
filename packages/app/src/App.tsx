@@ -1,5 +1,4 @@
 //packages/app/src/App.tsx
-//packages/app/src/App.tsx
 import { createApp } from '@backstage/frontend-defaults';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import kubernetesPlugin from '@backstage/plugin-kubernetes/alpha'; // <-- Changed to default import 
@@ -38,12 +37,15 @@ const signInPage = SignInPageBlueprint.make({
       return (
         <SignInPage
           {...props}
-          provider={{
-            id: 'github-auth-provider',
-            title: 'GitHub',
-            message: 'Sign in using GitHub',
-            apiRef: githubAuthApiRef,
-          }}
+          providers={[
+            'guest',
+            {
+              id: 'github-auth-provider',
+              title: 'GitHub',
+              message: 'Sign in using GitHub',
+              apiRef: githubAuthApiRef,
+            },
+          ]}
         />
       );
     },

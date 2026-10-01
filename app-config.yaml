@@ -224,33 +224,50 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
-    - type: file
-      target: ../../examples/entities.yaml
 
-    # Local example template
-    - type: file
-      target: ../../examples/template/template.yaml
-      rules:
-        - allow: [Template]
+      # Local example data, replace this with your production config, these are intended for demo use only.
+      # File locations are relative to the backend process, typically in a deployed context, such as in a Docker container, this will be the root
+      - type: file
+        target: ../../core-components/local/entities.yaml
 
-    # Local example template
-    - type: file
-      target: ../../examples/template2/template.yaml
-      rules:
-        - allow: [Template]
+      # Local example template
+      - type: file
+        target: ../../core-components/local/templates/template-locations.yaml
+        rules:
+          - allow: [Template]
 
-    # Another local template
-    - type: file
-      target: ../../examples/new-java-service/template.yaml
-      rules:
-        - allow: [Template]
+      # Local example organizational data
+      - type: file
+        target: ../../core-components/local/org.yaml
+        rules:
+          - allow: [User, Group, Location]
+    # # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    # - type: file
+    #   target: ../../examples/entities.yaml
 
-    # Local example organizational data
-    - type: file
-      target: ../../examples/org.yaml
-      rules:
-        - allow: [User, Group]
+    # # Local example template
+    # - type: file
+    #   target: ../../examples/template/template.yaml
+    #   rules:
+    #     - allow: [Template]
+
+    # # Local example template
+    # - type: file
+    #   target: ../../examples/template2/template.yaml
+    #   rules:
+    #     - allow: [Template]
+
+    # # Another local template
+    # - type: file
+    #   target: ../../local/new-java-service/template.yaml
+    #   rules:
+    #     - allow: [Template]
+
+    # # Local example organizational data
+    # - type: file
+    #   target: ../../examples/org.yaml
+    #   rules:
+    #     - allow: [User, Group]
 
     ## Uncomment these lines to add more example data
     # - type: url

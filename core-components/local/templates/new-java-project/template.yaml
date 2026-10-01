@@ -1,9 +1,9 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: java-spring-boot-golden-path
+  name: new-java-project
   title: Java Spring Boot Microservice
-  description: Creates a standard NovaBank Java/Spring Boot microservice with CI/CD and Docker.
+  description: Creates a standard Java/Spring Boot microservice with CI/CD and Docker. - java-spring-boot-golden-path
   tags:
     - java
     - spring-boot
