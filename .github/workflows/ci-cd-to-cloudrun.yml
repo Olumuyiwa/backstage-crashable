@@ -29,7 +29,23 @@ jobs:
           node-version: 24   # safer LTS for Backstage
           cache: yarn
 
+            
+      # Define a robust cache for the entire monorepo node_modules and Yarn cache
+      - name: Cache Node Modules
+        id: cache-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+            .yarn/cache
+            .yarn/install-state.gz
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
       - name: Install Dependencies
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
         run: yarn install
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
@@ -60,10 +76,15 @@ jobs:
         with:
           node-version: 24   # safer LTS for Backstage
           
-      - name: Download Node Modules
-        uses: actions/download-artifact@v4
+      - name: Restore Node Modules Cache
+        uses: actions/cache@v4
         with:
-          name: node-modules
+          path: |
+            node_modules
+            packages/*/node_modules
+            .yarn/cache
+            .yarn/install-state.gz
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Compile TypeScript
         run: yarn tsc
