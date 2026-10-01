@@ -6,9 +6,9 @@ permissions:
 
 on:
   push:
-    branches: ["github-cloudrun"]
+    branches: ["main"]
   pull_request:
-    branches: ["github-cloudrun"]
+    branches: ["main"]
 
 env:
  
@@ -16,7 +16,7 @@ env:
   IMAGE: backstage
 
 jobs:
-  build:
+  install_dependencies:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,22 +30,59 @@ jobs:
           cache: yarn
 
       - name: Install Dependencies
-        # run: yarn install --frozen-lockfile
         run: yarn install
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
 
-      # - name: Auto-commit updated yarn.lock
-      #   uses: stefanzweifel/git-auto-commit-action@v5
-      #   with:
-      #     commit_message: "chore(ci): auto-update yarn.lock"
-      #     file_pattern: "yarn.lock"
+      # Upload node_modules to share with test and build jobs
+      - name: Upload Node Modules
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-modules
+          path: packages/*/node_modules
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24   # safer LTS for Backstage
+          
+      - name: Download Node Modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
 
       - name: Compile TypeScript
         run: yarn tsc
 
       - name: Run Unit Tests
         run: yarn test:all
+
+
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24   # safer LTS for Backstage
+          cache: yarn
+
+      - name: Download Node Modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
 
       - name: Build the application
         run: yarn build:all
