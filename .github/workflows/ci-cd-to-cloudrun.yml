@@ -39,7 +39,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: node-modules
-          path: packages/*/node_modules
+          path: |
+            node_modules
+            packages/*/node_modules
+            .yarn
+            .yarnrc.yml
+            yarn.lock
+            .pnp.*
 
   test:
     runs-on: ubuntu-latest
@@ -81,10 +87,10 @@ jobs:
           node-version: 24   # safer LTS for Backstage
           cache: yarn
 
-      - name: Download Node Modules
-        uses: actions/download-artifact@v4
-        with:
-          name: node-modules
+      - name: Install Dependencies
+        run: yarn install
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
 
       - name: Build the application
         run: yarn build:all
