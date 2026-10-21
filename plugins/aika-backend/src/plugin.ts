@@ -22,19 +22,10 @@ export const aikaPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
       },
 
-      async init({
-        config,
-        logger,
-        discovery,
-        auth,
-        httpAuth,
-        httpRouter,
-      }) {
+      async init({ config, logger, discovery, httpAuth, httpRouter }) {
         const apiKey = config.getString('aika.openaiApiKey');
 
-        const model =
-          config.getOptionalString('aika.model') ??
-          'gpt-5';
+        const model = config.getOptionalString('aika.model') ?? 'gpt-5';
 
         const catalogApi = new CatalogClient({
           discoveryApi: discovery,

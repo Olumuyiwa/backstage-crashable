@@ -1,10 +1,7 @@
 import express from 'express';
 import Router from 'express-promise-router';
 
-import {
-  HttpAuthService,
-  LoggerService,
-} from '@backstage/backend-plugin-api';
+import { HttpAuthService, LoggerService } from '@backstage/backend-plugin-api';
 
 import { AikaService } from './services/AikaService';
 
@@ -17,11 +14,7 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const {
-    aikaService,
-    logger,
-    httpAuth,
-  } = options;
+  const { aikaService, logger, httpAuth } = options;
 
   const router = Router();
 
@@ -58,7 +51,7 @@ export async function createRouter(
       });
     } catch (error) {
       logger.error('AIKA request failed', {
-        error,
+        error: error instanceof Error ? error.message : String(error),
       });
 
       res.status(500).json({
