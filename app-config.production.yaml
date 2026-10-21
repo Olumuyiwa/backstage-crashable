@@ -17,7 +17,7 @@ backend:
     host: 0.0.0.0
 
   csp:
-    script-src: ["'self'", "'unsafe-eval'"] 
+    script-src: ["'self'", "'unsafe-eval'"]
     connect-src: ["'self'", 'http:', 'https:']
     upgrade-insecure-requests: false
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
@@ -48,7 +48,7 @@ backend:
 auth:
   environment: production
   providers:
-    guest: 
+    guest:
       userEntityRef: user:default/backstage-guest
       dangerouslyAllowOutsideDevelopment: true
       ownershipEntityRefs: [group:default/guest-family]
@@ -104,3 +104,17 @@ catalog:
       target: ./core-components/production/org.yaml
       rules:
         - allow: [User, Group, Location]
+
+# see https://backstage.io/docs/permissions/getting-started for more on the permission framework
+permission:
+  # setting this to `false` will disable permissions
+  enabled: true
+
+# see https://backstage.io/docs/ai/mcp-actions for more details
+mcpActions:
+  name: 'My Company Backstage' # defaults to "backstage"
+  description: 'Tools for managing your software catalog, creating new services from templates, and exploring your developer portal' # optional
+
+aika:
+  model: gpt-5
+  openaiApiKey: ${POC_OPENAI_API_KEY}
