@@ -312,3 +312,7 @@ permission:
 mcpActions:
   name: 'My Company Backstage' # defaults to "backstage"
   description: 'Tools for managing your software catalog, creating new services from templates, and exploring your developer portal' # optional
+
+aika:
+  model: gpt-5
+  openaiApiKey: ${POC_OPENAI_API_KEY}

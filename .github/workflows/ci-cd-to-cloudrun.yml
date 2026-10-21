@@ -179,6 +179,7 @@ jobs:
       - name: Deploy to Cloud Run
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}  # Use the GCP project ID stored in secrets
+          POC_OPENAI_API_KEY: ${{ secrets.POC_OPENAI_API_KEY }}
         run: |
           gcloud run deploy backstage \
             --image ${{ secrets.GKE_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ github.sha }} \
@@ -188,5 +189,6 @@ jobs:
             --project $GCP_PROJECT_ID \
             --memory 1Gi \
             --set-env-vars NODE_ENV=production \
+            --set-env-vars POC_OPENAI_API_KEY="$POC_OPENAI_API_KEY" \
             --set-env-vars GIHUB_CLOUDRUN_OAUTH_CLIENT_ID=${{ secrets.GIHUB_CLOUDRUN_OAUTH_CLIENT_ID }} \
             --set-env-vars GIHUB_CLOUDRUN_OAUTH_CLIENT_SECRET=${{ secrets.GIHUB_CLOUDRUN_OAUTH_CLIENT_SECRET }}
