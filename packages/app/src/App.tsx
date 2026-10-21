@@ -13,6 +13,8 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 
+import { aikaPlugin } from '@internal/backstage-plugin-aika';
+
 const signInPage = SignInPageBlueprint.make({
   params: {
     loader: async () => props => {
@@ -60,5 +62,6 @@ export default createApp({
       pluginId: 'app',
       extensions: [signInPage],
     }),
+    aikaPlugin,
     homeModule],
 });
