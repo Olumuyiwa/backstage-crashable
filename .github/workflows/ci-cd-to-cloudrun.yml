@@ -110,7 +110,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: 'false'
 
       - name: Compiling the application
-        run: yarn build:tsc
+        run: yarn tsc
 
       - name: Build the application
         run: yarn build:all
