@@ -6,9 +6,9 @@ permissions:
 
 on:
   push:
-    branches: ['main']
+    branches: ['security', 'main']
   pull_request:
-    branches: ['main']
+    branches: ['main', 'security']
 
 env:
   REPO: ${{ secrets.GKE_ARTIFACT_REPOSITORY }}
