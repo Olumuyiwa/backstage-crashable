@@ -28,7 +28,19 @@ export async function createRouter(
   });
 
   router.post('/ask', async (req, res) => {
-    await httpAuth.credentials(req);
+    const credentials = await httpAuth.credentials(req);
+
+    if (
+      credentials.principal.type !== 'user' ||
+      credentials.principal.userEntityRef ===
+        'user:default/backstage-guest'
+    ) {
+      res.status(403).json({
+        error: 'AIKA is available only to signed-in users',
+      });
+
+      return;
+    }
 
     const question = req.body?.question;
 

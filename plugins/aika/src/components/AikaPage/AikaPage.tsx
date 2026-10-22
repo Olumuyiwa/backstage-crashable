@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -13,6 +14,7 @@ import {
 import {
   discoveryApiRef,
   fetchApiRef,
+  identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
 
@@ -35,6 +37,36 @@ type Message = {
 export const AikaPage = () => {
   const discoveryApi = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);
+  const identityApi = useApi(identityApiRef);
+
+  const [accessState, setAccessState] = useState<
+    'loading' | 'allowed' | 'denied' | 'error'
+  >('loading');
+
+  useEffect(() => {
+    let active = true;
+
+    identityApi
+      .getBackstageIdentity()
+      .then(identity => {
+        if (active) {
+          setAccessState(
+            identity.userEntityRef === 'user:default/backstage-guest'
+              ? 'denied'
+              : 'allowed',
+          );
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setAccessState('error');
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [identityApi]);
 
   const api = useMemo(
     () =>
@@ -56,6 +88,32 @@ export const AikaPage = () => {
 
   const [error, setError] =
     useState<string>();
+
+  if (accessState === 'loading') {
+    return (
+      <Page themeId="tool">
+        <Header title="AIKA" subtitle="AI Knowledge Assistant" />
+        <Content>
+          <Progress />
+        </Content>
+      </Page>
+    );
+  }
+
+  if (accessState === 'denied' || accessState === 'error') {
+    return (
+      <Page themeId="tool">
+        <Header title="AIKA" subtitle="AI Knowledge Assistant" />
+        <Content>
+          <Typography color={accessState === 'error' ? 'error' : 'textSecondary'}>
+            {accessState === 'denied'
+              ? 'AIKA is available only to signed-in users.'
+              : 'Unable to verify your sign-in. Please reload and try again.'}
+          </Typography>
+        </Content>
+      </Page>
+    );
+  }
 
   const askAika = async () => {
     const trimmed =

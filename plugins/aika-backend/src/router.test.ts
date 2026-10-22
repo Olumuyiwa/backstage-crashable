@@ -1,4 +1,8 @@
-import { mockErrorHandler, mockServices } from '@backstage/backend-test-utils';
+import {
+  mockErrorHandler,
+  mockServices,
+} from '@backstage/backend-test-utils';
+import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { AuthenticationError } from '@backstage/errors';
 import express from 'express';
 import request from 'supertest';
@@ -98,6 +102,35 @@ describe('createRouter', () => {
         .send({ question: 'Hello AIKA' });
 
       expect(response.status).toBe(401);
+    });
+
+    it('should not allow guest users', async () => {
+      const guestRouter = await createRouter({
+        aikaService,
+        logger: mockServices.logger.mock(),
+        httpAuth: {
+          credentials: jest.fn().mockResolvedValue({
+            principal: {
+              type: 'user',
+              userEntityRef: 'user:default/backstage-guest',
+            },
+          }),
+        } as unknown as HttpAuthService,
+      });
+
+      const guestApp = express();
+      guestApp.use(guestRouter);
+      guestApp.use(mockErrorHandler());
+
+      const response = await request(guestApp)
+        .post('/ask')
+        .send({ question: 'Hello AIKA' });
+
+      expect(response.status).toBe(403);
+      expect(response.body).toEqual({
+        error: 'AIKA is available only to signed-in users',
+      });
+      expect(aikaService.ask).not.toHaveBeenCalled();
     });
 
     it('should return 500 if the aikaService fails', async () => {
